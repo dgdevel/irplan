@@ -1,0 +1,128 @@
+
+<fieldset class=heading>
+	<legend>Selected series</legend>
+	<h2><%= series.name %></h2>
+	<p><a href=select_series>Back to series selection</a></p>
+</fieldset>
+
+<br>
+
+
+<fieldset class=heading>
+	<legend>Selected week</legend>
+	<h3>Week #<%= week.index %> : <%= week.track_name %></h3>
+	<p><a href=select_week?series=<%= series.id %>>Back to week selection</a></p>
+</fieldset>
+
+<br>
+
+<fieldset>
+	<legend>
+		Add your race planning:
+		<br>
+		type your name, select the probability that you will be in the race,
+		<br>
+		click on the [+] button in the races you will subscribe to
+	</legend>
+
+	<label>
+		Driver name
+		<input id=driver_name>
+	</label>
+
+	<label>
+		Probability
+		<select id=probability>
+			<option></option>
+			<option value=10>10% - It will hard, but I will try to race this one</option>
+			<option value=20>20%</option>
+			<option value=30>30%</option>
+			<option value=40>40%</option>
+			<option value=50>50% - Half probability to race</option>
+			<option value=60>60%</option>
+			<option value=70>70%</option>
+			<option value=80>80%</option>
+			<option value=90>90%</option>
+			<option value=100>100% - I will subscribe to this race, count on me</option>
+		</select>
+	</label>
+
+	<br><br>
+
+	<div id="planner">
+		<%= ERB.new(IO.read('views/planner_table.erb')).result(binding()) %>
+	</div>
+
+</fieldset>
+
+<br>
+<h4><a target=_blank href="s<%= series.id%>w<%= week.id %>.png">Image preview</a></h4>
+
+<br>
+<h4>Forum code</h4>
+<code>
+	[url=<script>
+	document.write(location)
+	</script>][img]<script>
+	document.write(
+		location.href.substring(0, location.href.lastIndexOf('/')+1) +
+		"s<%= series.id %>w<%= week.id %>.png"
+	)
+</script>[/img][/url]
+</code>
+
+<script>
+function addMyPlan(index) {
+	var driverName = $('#driver_name').val();
+	if (!driverName) {
+		alert('You forgot to add your name');
+		$('#driver_name').parent().addClass('invalid');
+		return;
+	} else {
+		$('#driver_name').parent().removeClass('invalid');
+	}
+	var probability = $('#probability').val();
+	if (!probability) {
+		alert('You forgot to pick the probability to race');
+		$('#probability').parent().addClass('invalid');
+		return;
+	} else {
+		$('#probability').parent().removeClass('invalid');
+	}
+	$.ajax({
+		type: 'POST',
+		url: 'add_my_plan',
+		data: {
+			series: <%= series.id %>,
+			week: <%= week.id %>,
+			driver_name: driverName,
+			probability: probability,
+			race: index
+		},
+		error: function() {
+			alert('Could not add your planning: an error occurred');
+		},
+		success: function(data, status, xhr) {
+			$('#planner').html(xhr.responseText)
+		}
+	});
+}
+
+function removeMyPlan(planId) {
+	$.ajax({
+		type: 'POST',
+		url: 'remove_my_plan',
+		data: {
+			series: <%= series.id %>,
+			week: <%= week.id %>,
+			plan: planId
+		},
+		error: function() {
+			alert('Could not remove your planning: an error occurred');
+		},
+		success: function(data, status, xhr) {
+			$('#planner').html(xhr.responseText)
+		}
+	});
+}
+</script>

@@ -1,0 +1,15 @@
+
+<form action=select_week>
+	<fieldset>
+		<legend>Select a series</legend>
+		<label>
+			Series
+			<select name=series onchange=document.forms[0].submit()>
+				<option></option>
+				<% series.each do |item| %>
+					<option value="<%= item.id %>"><%= item.name %></option>
+				<% end %>
+			</select>
+		</label>
+	</fieldset>
+</form>

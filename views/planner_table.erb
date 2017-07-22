@@ -1,0 +1,53 @@
+<% dow = [ "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon" ] %>
+<table class="planner">
+	<thead>
+		<tr>
+			<th>Days \ Hours</th>
+			<% series.race_times.each do |mins| %>
+				<th><%= mins / 60 %>:<%= mins % 60 %></th>
+			<% end %>
+		</tr>
+	</thead>
+	<tbody>
+		<% week.race_days.each_with_index do |day, dayIndex| %>
+			<tr>
+				<th style="text-align:left">
+					<%= dow[dayIndex] %>
+					<%= day.strftime("%Y/%m/%d") %>
+				</th>
+				<% series.race_times.each_with_index do |mins, minsIndex| %>
+					<% index = dayIndex * series.race_times.length + minsIndex %>
+					<% race_plans = plans.select{ |plan| plan.race == index } %>
+					<% race_probability = race_plans.map(&:probability).inject(0, &:+).to_f / 100 %>
+					<% cell_class = ""
+						 if race_probability > 0
+							 cell_class = "unofficial"
+							 if race_probability >= series.official
+								 cell_class = "official"
+							 end
+						 end
+					%>
+					<td class="<%= cell_class %>">
+							<% if not race_plans.empty? %>
+							<ul>
+								<% race_plans.each do |plan| %>
+									<!-- do not fix indentation: it's needed to keep non breaking spaces -->
+									<li><% if buttons %>
+											<button type="button" onclick="removeMyPlan(<%= plan.id %>)">
+												-
+											</button><% end %><%= plan.driver_name.sub(" ","&nbsp;") %>&nbsp;(<%= plan.probability %>%)
+									</li>
+								<% end %>
+							</ul>
+						<% end %>
+						<% if buttons %>
+							<% if not race_plans.empty? %><hr><% end %>
+							<button class=add type=button onclick="addMyPlan(<%= index %>)">+</button>
+						<% end %>
+					</td>
+				<% end %>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+<p>Race times are in GMT timezone.</p>

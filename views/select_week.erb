@@ -1,0 +1,24 @@
+
+<fieldset class=heading>
+	<legend>Selected series</legend>
+	<h2><%= series.name %></h2>
+	<p><a href=select_series>Back to series selection</a></p>
+</fieldset>
+
+<br>
+
+<form action=planner>
+	<fieldset>
+		<legend>Select a week</legend>
+		<input type=hidden name=series value=<%= series.id %>>
+		<select name=week onchange=document.forms[0].submit()>
+			<option></option>
+			<% weeks.each do |item| %>
+				<option value="<%= item.id %>">
+					[<%= item.index %>]
+					<%= item.track_name %> (from <%= item.start %>)
+				</option>
+			<% end %>
+		</select>
+	</fieldset>
+</form>

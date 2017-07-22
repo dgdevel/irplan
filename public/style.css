@@ -1,0 +1,36 @@
+.heading * {
+  display: inline;
+}
+table.planner {
+  width: 100%;
+  text-align: left;
+}
+table.planner button, table.planner th {
+  text-align: center;
+  font-family: monospace;
+}
+table.planner td {
+  border: 1px solid black;
+}
+ul {
+  list-style-type: none;
+}
+table.planner ul, table.planner li {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.invalid {
+  color: red;
+}
+.unofficial {
+  background-color: lemonchiffon;
+}
+
+.official {
+  background-color: lightgreen;
+}
+a {
+  text-decoration: none;
+}
