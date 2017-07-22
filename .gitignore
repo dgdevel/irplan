@@ -1,0 +1,4 @@
+data.db
+.bundle
+public/s*w*.png
+SciTE.session
