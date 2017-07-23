@@ -132,7 +132,7 @@ function cellMouseOver(td, isoDate) {
 	var gmt = new Date(isoDate);
 	var local = gmt.toLocaleString();
 	$('#timezone-helper').html(
-		"<p>Race in current timezone ("+
+		"<p>Highlighted race in current timezone ("+
 		Intl.DateTimeFormat().resolvedOptions().timeZone+
 		"): " + local + "</p>");
 	$(td).addClass('highlighted');
