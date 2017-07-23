@@ -53,7 +53,8 @@ class App < Sinatra::Base
     image_optim = ImageOptim.new(
       :pngout => false, :advpng => false, :optipng => false, :pngquant => false,
       :jhead => false, :jpegoptim => false,
-      :svgo => false)
+      :svgo => false,
+      :gifsicle => false)
     image_optim.optimize_image!("#{image_base}.png")
   end
 
