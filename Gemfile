@@ -7,5 +7,6 @@ source 'https://rubygems.org' do
   gem 'rerun', '~>0.11.0'
   # arch: install from aur wkhtmltopdf-static
   gem 'imgkit', '~>1.6.1'
+  gem 'image_optim', '~>0.25.0'
 end
 

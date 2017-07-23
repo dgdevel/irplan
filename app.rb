@@ -1,6 +1,7 @@
 require 'cgi'
 require 'sinatra'
 require 'imgkit'
+require 'image_optim'
 
 require './model'
 
@@ -49,6 +50,11 @@ class App < Sinatra::Base
     image = IMGKit.new(html)
     image.stylesheets << 'public/style.css'
     image.to_file("#{image_base}.png")
+    image_optim = ImageOptim.new(
+      :pngout => false, :advpng => false, :optipng => false, :pngquant => false,
+      :jhead => false, :jpegoptim => false,
+      :svgo => false)
+    image_optim.optimize_image!("#{image_base}.png")
   end
 
   get '/planner' do
