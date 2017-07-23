@@ -53,6 +53,8 @@
 		<%= ERB.new(IO.read('views/planner_table.erb')).result(binding()) %>
 	</div>
 
+	<div id="timezone-helper"><p>&nbsp;</p></div>
+
 </fieldset>
 
 <br>
@@ -125,6 +127,16 @@ function removeMyPlan(planId) {
 		}
 	});
 }
+
+function showInLocalTimezone(isoDate) {
+	var gmt = new Date(isoDate);
+	var local = gmt.toLocaleString();
+	$('#timezone-helper').html(
+		"<p>Race in current timezone ("+
+		Intl.DateTimeFormat().resolvedOptions().timeZone+
+		"): " + local + "</p>");
+}
+
 </script>
 
 <p>Source code available on <a href="https://github.com/dgdevel/irplan/">GitHub</a>, <a href="http://members.iracing.com/jforum/pm/sendTo/154439.page">pm me on iracing</a></p>
