@@ -128,13 +128,18 @@ function removeMyPlan(planId) {
 	});
 }
 
-function showInLocalTimezone(isoDate) {
+function cellMouseOver(td, isoDate) {
 	var gmt = new Date(isoDate);
 	var local = gmt.toLocaleString();
 	$('#timezone-helper').html(
 		"<p>Race in current timezone ("+
 		Intl.DateTimeFormat().resolvedOptions().timeZone+
 		"): " + local + "</p>");
+	$(td).addClass('highlighted');
+}
+
+function cellMouseOut(td) {
+	$(td).removeClass('highlighted');
 }
 
 </script>

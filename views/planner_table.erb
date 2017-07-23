@@ -28,7 +28,8 @@
 						 end
 					%>
 					<% iso_date = "#{day.strftime("%Y-%m-%d")} #{mins / 60}:#{mins % 60}:00 GMT" %>
-					<td class="<%= cell_class %>" onmouseover="showInLocalTimezone('<%= iso_date %>')">
+					<td class="<%= cell_class %>" onmouseover="cellMouseOver(this, '<%= iso_date %>')"
+						onmouseout="cellMouseOut(this)">
 							<% if not race_plans.empty? %>
 							<ul>
 								<% race_plans.each do |plan| %>

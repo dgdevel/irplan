@@ -34,3 +34,7 @@ table.planner ul, table.planner li {
 a {
   text-decoration: none;
 }
+
+td.highlighted {
+  border: 1px solid red !important;
+}
