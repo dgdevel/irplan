@@ -1,9 +1,40 @@
 require 'cgi'
+require 'erb'
+require 'ostruct'
 require 'sinatra'
 require 'imgkit'
 require 'image_optim'
+require 'sucker_punch'
 
 require './model'
+
+class ImageUpdaterJob
+  include SuckerPunch::Job
+
+  def perform(data)
+    puts "ImageUpdaterJob.perform", data.inspect
+    series = data[:series]
+    week = data[:week]
+    plans = data[:plans]
+    buttons = false
+    html = ERB.new(IO.read('views/planner_table.erb')).result(OpenStruct.new({
+      :series => series,
+      :week => week,
+      :plans => plans,
+      :buttons => false
+    }).instance_eval { binding })
+    image_base = "public/s#{series.id}w#{week.id}"
+    image = IMGKit.new(html)
+    image.stylesheets << 'public/style.css'
+    image.to_file("#{image_base}.png")
+    image_optim = ImageOptim.new(
+      :pngout => false, :advpng => false, :optipng => false, :pngquant => false,
+      :jhead => false, :jpegoptim => false,
+      :svgo => false,
+      :gifsicle => false)
+    image_optim.optimize_image!("#{image_base}.png")
+  end
+end
 
 class App < Sinatra::Base
 
@@ -45,17 +76,7 @@ class App < Sinatra::Base
       plans: plans,
       buttons: false
     }
-    html = erb :planner_table, layout: false, locals: locals
-    image_base = "public/s#{series.id}w#{week.id}"
-    image = IMGKit.new(html)
-    image.stylesheets << 'public/style.css'
-    image.to_file("#{image_base}.png")
-    image_optim = ImageOptim.new(
-      :pngout => false, :advpng => false, :optipng => false, :pngquant => false,
-      :jhead => false, :jpegoptim => false,
-      :svgo => false,
-      :gifsicle => false)
-    image_optim.optimize_image!("#{image_base}.png")
+    ImageUpdaterJob.perform_async(locals)
   end
 
   get '/planner' do

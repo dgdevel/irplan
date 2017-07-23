@@ -8,5 +8,6 @@ source 'https://rubygems.org' do
   # arch: install from aur wkhtmltopdf-static
   gem 'imgkit', '~>1.6.1'
   gem 'image_optim', '~>0.25.0'
+  gem 'sucker_punch', '~> 2.0'
 end
 
