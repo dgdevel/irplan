@@ -1,3 +1,7 @@
+h1,h2,h3,h4,h5,h6,p,a, legend, label, li {
+  font-family: sans-serif;
+}
+
 .heading * {
   display: inline;
 }
