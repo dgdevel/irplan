@@ -4,7 +4,7 @@
 		<tr>
 			<th>Days \ Hours</th>
 			<% series.race_times.each do |mins| %>
-				<th><%= mins / 60 %>:<%= mins % 60 %></th>
+				<th><%= (mins / 60).to_s.ljust(2, '0') %>:<%= mins % 60 %></th>
 			<% end %>
 		</tr>
 	</thead>
