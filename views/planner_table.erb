@@ -35,7 +35,8 @@
 								<% race_plans.each do |plan| %>
 									<!-- do not fix indentation: it's needed to keep non breaking spaces -->
 									<li><% if buttons %>
-											<button type="button" onclick="removeMyPlan(<%= plan.id %>)">
+											<button type="button"
+												onclick="removeMyPlan(<%= plan.id %>, '<%= plan.driver_name%>', '<%= iso_date%>')">
 												-
 											</button><% end %><%= plan.driver_name.sub(" ","&nbsp;") %>&nbsp;(<%= plan.probability %>%)
 									</li>

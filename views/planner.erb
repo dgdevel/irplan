@@ -110,7 +110,10 @@ function addMyPlan(index) {
 	});
 }
 
-function removeMyPlan(planId) {
+function removeMyPlan(planId, driverName, isoDate) {
+	if (!confirm('Remove planning for race ' + isoDate + ' for ' + driverName + '?')) {
+		return;
+	}
 	$.ajax({
 		type: 'POST',
 		url: 'remove_my_plan',
