@@ -1,10 +1,10 @@
 <% dow = [ "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon" ] %>
-<table class="planner">
+<table class="planner tlite-table">
 	<thead>
 		<tr>
 			<th>Days \ Hours</th>
 			<% series.race_times.each do |mins| %>
-				<th><%= (mins / 60).to_s.rjust(2, '0') %>:<%= mins % 60 %></th>
+        <th><%= (mins / 60).to_s.rjust(2, '0') %>:<%= (mins % 60).to_s.rjust(2, '0') %></th>
 			<% end %>
 		</tr>
 	</thead>
@@ -27,7 +27,7 @@
 							 end
 						 end
 					%>
-					<% iso_date = "#{day.strftime("%Y-%m-%d")}T#{(mins / 60).to_s.rjust(2, '0')}:#{mins % 60}:00Z" %>
+					<% iso_date = "#{day.strftime("%Y-%m-%d")}T#{(mins / 60).to_s.rjust(2, '0')}:#{(mins % 60).to_s.rjust(2, '0')}:00Z" %>
 					<td class="<%= cell_class %>" onmouseover="cellMouseOver(this, '<%= iso_date %>')"
 						onmouseout="cellMouseOut(this)">
 							<% if not race_plans.empty? %>
