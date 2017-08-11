@@ -1,4 +1,5 @@
 <% dow = [ "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon" ] %>
+<% now = Time.now.getgm %>
 <table class="planner tlite-table">
 	<thead>
 		<tr>
@@ -28,13 +29,23 @@
 						 end
 					%>
 					<% iso_date = "#{day.strftime("%Y-%m-%d")}T#{(mins / 60).to_s.rjust(2, '0')}:#{(mins % 60).to_s.rjust(2, '0')}:00Z" %>
+					<% current_race_datetime = DateTime.new(
+						day.strftime("%Y").to_i,
+						day.strftime("%m").to_i,
+						day.strftime("%d").to_i,
+						mins / 60,
+						mins % 60,
+						0,
+						'+00:00'
+					) %>
+					<% is_past = current_race_datetime < now %>
 					<td class="<%= cell_class %>" onmouseover="cellMouseOver(this, '<%= iso_date %>')"
 						onmouseout="cellMouseOut(this)">
 							<% if not race_plans.empty? %>
 							<ul>
 								<% race_plans.each do |plan| %>
 									<!-- do not fix indentation: it's needed to keep non breaking spaces -->
-									<li><% if buttons %>
+									<li><% if buttons and not is_past %>
 											<button type="button"
 												onclick="removeMyPlan(<%= plan.id %>, '<%= plan.driver_name%>', '<%= iso_date%>')">
 												-
@@ -43,7 +54,7 @@
 								<% end %>
 							</ul>
 						<% end %>
-						<% if buttons %>
+						<% if buttons and not is_past %>
 							<% if not race_plans.empty? %><hr><% end %>
 							<button class=add type=button onclick="addMyPlan(<%= index %>)">+</button>
 						<% end %>
