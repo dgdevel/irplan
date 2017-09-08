@@ -86,6 +86,13 @@ class App < Sinatra::Base
       plans: Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i),
       buttons: true
     }
+    # generate image if does not exists
+    imagefilename = "public/s#{locals[:series].id}w#{locals[:week].id}.png"
+    puts "test existence #{imagefilename}"
+    if not File.file?(imagefilename) then
+      puts "file need to be generated!"
+      update_image(locals[:series], locals[:week], locals[:plans])
+    end
     erb :planner, locals: locals
   end
 
