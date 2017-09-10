@@ -17,7 +17,7 @@ class ImageUpdaterJob
     week = data[:week]
     plans = data[:plans]
     buttons = false
-    html = ERB.new(IO.read('views/planner_table.erb')).result(OpenStruct.new({
+    html = ERB.new(IO.read('views/planner_image.erb')).result(OpenStruct.new({
       :series => series,
       :week => week,
       :plans => plans,

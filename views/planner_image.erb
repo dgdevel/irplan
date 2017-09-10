@@ -1,0 +1,6 @@
+<!doctype html>
+<div>
+  <h2><%= series.name %></h2>
+  <h3>Week #<%= week.index %> : <%= week.track_name %></h3>
+</div>
+<%= ERB.new(IO.read('views/planner_table.erb'), nil, nil, '_sub01').result(binding()) %>
