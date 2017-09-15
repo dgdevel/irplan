@@ -16,6 +16,11 @@ ActiveRecord::Schema.define do
       table.column :official, :integer
     end
   end
+  unless ActiveRecord::Base.connection.column_exists? 'series', 'results'
+    change_table :series do |table|
+      table.column :results, :string
+    end
+  end
 end
 
 class Series < ActiveRecord::Base
