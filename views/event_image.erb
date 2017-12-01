@@ -1,0 +1,6 @@
+<!doctype html>
+<div>
+  <h2><%= event.name %></h2>
+</div>
+<%= ERB.new(IO.read('views/event_table.erb'), nil, nil, '_sub01').result(binding()) %>
+

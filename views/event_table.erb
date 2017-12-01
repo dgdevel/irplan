@@ -1,0 +1,50 @@
+<% dow = [ "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon" ] %>
+<% now = Time.now.getgm %>
+
+<table class=planner>
+  <thead>
+    <tr>
+      <th>Track</th>
+      <th>Date and Time</th>
+      <th>Participants</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% races.each do |race| %>
+      <tr>
+        <th>
+          [<%= race.index %>]
+          <%= race.track_name %>
+        </th>
+        <th>
+          <%= race.start.strftime("%Y-%m-%d %H:%M") %>
+          <% iso_date = "#{race.start.strftime("%Y-%m-%dT%H:%M:00Z")}"%>
+        </th>
+        <td onmouseover="cellMouseOver(this, '<%= iso_date %>')"
+            onmouseout="cellMouseOut(this)">
+          <ul>
+            <% plans.
+                select { |plan| plan.events_races_id == race.id }.
+                each do |plan| %>
+                <li>
+                  <% if buttons %>
+                    <button type=button onclick="removeMyPlan(<%= plan.id %>, '<%= plan.driver_name%>', '<%= iso_date%>')">
+                    -
+                    </button>
+                  <% end %>
+                  <%= plan.driver_name.sub(" ", "&nbsp;") %>&nbsp;(<%= plan.probability %>)
+                </li>
+            <% end %>
+            <% if buttons %>
+              <li>
+                <button class=add type=button onclick="addMyPlan(<%= race.id %>)">+</button>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

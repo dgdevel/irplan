@@ -1,4 +1,5 @@
 data.db
 .bundle
 public/s*w*.png
+public/e*.png
 SciTE.session

@@ -36,6 +36,35 @@ class ImageUpdaterJob
   end
 end
 
+class ImageEventUpdaterJob
+  include SuckerPunch::Job
+
+  def perform(data)
+    puts "ImageEventUpdaterJob.perform", data.inspect
+    event = data[:event]
+    races = data[:races]
+    plans = data[:plans]
+    html = ERB.new(IO.read('views/event_image.erb')).result(OpenStruct.new({
+      :event => event,
+      :races => races,
+      :plans => plans,
+      :buttons => false
+    }).instance_eval { binding })
+    image_base = "public/e#{event.id}"
+    image = IMGKit.new(html)
+    image.stylesheets << "public/style.css"
+    image.to_file("#{image_base}.png")
+    image_optim = ImageOptim.new(
+      :pngout => false, :advpng => false, :optipng => false, :pngquant => false,
+      :jhead => false, :jpegoptim => false,
+      :svgo => false,
+      :gifsicle => false)
+    image_optim.optimize_image!("#{image_base}.png")
+
+  end
+
+end
+
 class App < Sinatra::Base
 
   configure do
@@ -78,6 +107,17 @@ class App < Sinatra::Base
     }
     ImageUpdaterJob.perform_async(locals)
   end
+
+  def update_event_image(event, races, plans)
+    locals = {
+      event: event,
+      races: races,
+      plans: plans,
+      buttons: false
+    }
+    ImageEventUpdaterJob.perform_async(locals)
+  end
+
 
   get '/planner' do
     locals = {
@@ -128,6 +168,65 @@ class App < Sinatra::Base
       plans: plans,
       buttons: true
     }
+  end
+
+  get '/select_event' do
+    erb :select_event, locals: {
+      events: Events.all
+    }
+  end
+
+  get '/event' do
+    event = Events.find(params[:event].to_i)
+    races = EventRaces.where(events_id: params[:event].to_i)
+    plans = EventPlans.where(events_id: params[:event].to_i)
+    imagefilename = "public/e#{event.id}.png"
+    puts "test existence #{imagefilename}"
+    if not File.file?(imagefilename) then
+      puts "file need to be generated!"
+      update_event_image(event, races, plans)
+    end
+    erb :event, locals: {
+      event: event,
+      races: races,
+      plans: plans,
+      buttons: true
+    }
+  end
+
+  post '/add_my_event_plan' do
+    EventPlans.create(
+      events_id: params['event'].to_i,
+      events_races_id: params['race'].to_i,
+      driver_name: params['driver_name'],
+      probability: params['probability'].to_i
+    )
+    event = Events.find(params[:event].to_i)
+    races = EventRaces.where(events_id: params[:event].to_i)
+    plans = EventPlans.where(events_id: params[:event].to_i)
+    update_event_image(event, races, plans)
+    erb :event_table, layout:false, locals: {
+      event: event,
+      races: races,
+      plans: plans,
+      buttons: true
+    }
+  end
+
+  post '/remove_my_event_plan' do
+    plan = EventPlans.find(params['plan'].to_i)
+    event = Events.find(plan.events_id)
+    races = EventRaces.where(events_id: plan.events_id)
+    EventPlans.delete(params['plan'].to_i)
+    plans = EventPlans.where(events_id: plan.events_id)
+    update_event_image(event, races, plans)
+    erb :event_table, layout:false, locals: {
+      event: event,
+      races: races,
+      plans: plans,
+      buttons: true
+    }
+
   end
 
 end

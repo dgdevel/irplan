@@ -63,3 +63,40 @@ ActiveRecord::Schema.define do
 end
 
 class Plans < ActiveRecord::Base; end
+
+ActiveRecord::Schema.define do
+  unless ActiveRecord::Base.connection.tables.include? 'events'
+    create_table :events do |table|
+      table.column :name, :string
+    end
+  end
+end
+
+class Events < ActiveRecord::Base; end
+
+ActiveRecord::Schema.define do
+  unless ActiveRecord::Base.connection.tables.include? 'event_races'
+    create_table :event_races do |table|
+      table.column :events_id, :integer
+      table.column :track_name, :string
+      table.column :index, :integer
+      table.column :start, :datetime
+    end
+  end
+end
+
+class EventRaces < ActiveRecord::Base; end
+
+ActiveRecord::Schema.define do
+  unless ActiveRecord::Base.connection.tables.include? 'event_plans'
+    create_table :event_plans do |table|
+      table.column :events_id, :integer
+      table.column :events_races_id, :integer
+      table.column :driver_name, :string
+      table.column :probability, :integer
+    end
+  end
+end
+
+class EventPlans < ActiveRecord::Base; end
+
