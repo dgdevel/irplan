@@ -19,7 +19,14 @@
 				<% series.race_times.each_with_index do |mins, minsIndex| %>
 					<% index = dayIndex * series.race_times.length + minsIndex %>
 					<% race_plans = plans.select{ |plan| plan.race == index } %>
-					<% race_probability = race_plans.map(&:probability).inject(0, &:+).to_f / 100 %>
+          <% race_probability = race_plans.map(&:probability).inject(0, &:+).to_f / 100 %>
+          <% hil_color = highlight.select { |h| h.index == index and h.series_id == series.id }.first %>
+          <%
+          if hil_color
+            hil_color = " style='border-color: #{hil_color.color}' "
+          else
+            hil_color = ""
+          end %>
 					<% cell_class = ""
 						 if race_probability > 0
 							 cell_class = "unofficial"
@@ -39,7 +46,7 @@
 						'+00:00'
 					) %>
 					<% is_past = current_race_datetime < now %>
-					<td class="<%= cell_class %>" onmouseover="cellMouseOver(this, '<%= iso_date %>')"
+          <td class="<%= cell_class %>" <%= hil_color %> onmouseover="cellMouseOver(this, '<%= iso_date %>')"
 						onmouseout="cellMouseOut(this)">
 							<% if not race_plans.empty? %>
 							<ul>
@@ -65,3 +72,11 @@
 	</tbody>
 </table>
 <p>Race times are in GMT timezone.</p>
+<ul class=highlight-desc>
+  <% highlight.each do |h| %>
+    <li>
+      <span style="background-color: <%= h.color %>;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      <%= h.name %>
+    </li>
+  <% end %>
+</ul>

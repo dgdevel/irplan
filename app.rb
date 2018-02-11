@@ -48,10 +48,12 @@ class ImageEventUpdaterJob
     event = data[:event]
     races = data[:races]
     plans = data[:plans]
+    highlight = data[:highlight]
     html = ERB.new(IO.read('views/event_image.erb')).result(OpenStruct.new({
       :event => event,
       :races => races,
       :plans => plans,
+      :highlight => highlight,
       :buttons => false
     }).instance_eval { binding })
     image_base = "public/e#{event.id}"
@@ -102,11 +104,12 @@ class App < Sinatra::Base
     }
   end
 
-  def update_image(series, week, plans)
+  def update_image(series, week, plans, highlight)
     locals = {
       series: series,
       week: week,
       plans: plans,
+      highlight: highlight,
       buttons: false
     }
     ImageUpdaterJob.perform_async(locals)
@@ -128,6 +131,7 @@ class App < Sinatra::Base
       series: Series.find(params[:series].to_i),
       week: Weeks.find(params[:week].to_i),
       plans: Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i),
+      highlight: HighlightedWeekly.where(series_id: params[:series].to_i),
       buttons: true
     }
     # generate image if does not exists
@@ -135,7 +139,7 @@ class App < Sinatra::Base
     puts "test existence #{imagefilename}"
     if not File.file?(imagefilename) then
       puts "file need to be generated!"
-      update_image(locals[:series], locals[:week], locals[:plans])
+      update_image(locals[:series], locals[:week], locals[:plans], locals[:highlight])
     end
     erb :planner, locals: locals
   end
@@ -151,11 +155,13 @@ class App < Sinatra::Base
     series = Series.find(params[:series].to_i)
     week = Weeks.find(params[:week].to_i)
     plans = Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i)
-    update_image(series, week, plans)
+    highlight = HighlightedWeekly.where(series_id: params[:series].to_i)
+    update_image(series, week, plans, highlight)
     erb :planner_table, layout: false, locals: {
       series: series,
       week: week,
       plans: plans,
+      highlight: highlight,
       buttons: true
     }
   end
@@ -165,11 +171,13 @@ class App < Sinatra::Base
     series = Series.find(params[:series].to_i)
     week = Weeks.find(params[:week].to_i)
     plans = Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i)
-    update_image(series, week, plans)
+    highlight = HighlightedWeekly.where(series_id: params[:series].to_i)
+    update_image(series, week, plans, highlight)
     erb :planner_table, layout: false, locals: {
       series: series,
       week: week,
       plans: plans,
+      highlight: highlight,
       buttons: true
     }
   end

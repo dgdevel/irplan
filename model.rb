@@ -100,3 +100,16 @@ end
 
 class EventPlans < ActiveRecord::Base; end
 
+ActiveRecord::Schema.define do
+  unless ActiveRecord::Base.connection.tables.include? 'highlighted_weeklies'
+    create_table :highlighted_weeklies do |table|
+      table.column :series_id, :integer
+      table.column :color, :string
+      table.column :name, :string
+      table.column :index, :integer
+    end
+  end
+end
+
+class HighlightedWeekly < ActiveRecord::Base; end
+
