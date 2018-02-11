@@ -20,11 +20,13 @@ class ImageUpdaterJob
     series = data[:series]
     week = data[:week]
     plans = data[:plans]
+    highlight = data[:highlight]
     buttons = false
     html = ERB.new(IO.read('views/planner_image.erb')).result(OpenStruct.new({
       :series => series,
       :week => week,
       :plans => plans,
+      :highlight => highlight,
       :buttons => false
     }).instance_eval { binding })
     image_base = "public/s#{series.id}w#{week.id}"
