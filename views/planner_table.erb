@@ -73,10 +73,14 @@
 </table>
 <p>Race times are in GMT timezone.</p>
 <ul class=highlight-desc>
-  <% highlight.each do |h| %>
-    <li>
-      <span style="background-color: <%= h.color %>;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      <%= h.name %>
-    </li>
-  <% end %>
+  <%= highlight.map { |h|
+    <<-HTML
+      <li>
+        <span style="background-color: #{h.color}">
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </span>
+        #{h.name}
+      </li>
+    HTML
+  }.uniq.join %>
 </ul>
