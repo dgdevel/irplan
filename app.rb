@@ -99,7 +99,7 @@ class App < Sinatra::Base
 
   get '/select_week' do
     series = Series.find(params[:series])
-    weeks = Weeks.all
+    weeks = Weeks.where(series_id: series.id)
     erb :select_week, locals: {
       series: series,
       weeks: weeks
