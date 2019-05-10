@@ -76,4 +76,4 @@ DEPENDENCIES
   thin (~> 1.7.2)!
 
 BUNDLED WITH
-   1.15.3
+   2.0.1
