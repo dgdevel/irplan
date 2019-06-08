@@ -145,7 +145,7 @@ class App < Sinatra::Base
     puts "test existence #{imagefilename}"
     if not File.file?(imagefilename) then
       puts "file need to be generated!"
-      update_image(locals[:series], locals[:week], locals[:plans], locals[:highlight])
+      update_image(locals[:series], locals[:car_classes], locals[:week], locals[:plans], locals[:highlight])
     end
     erb :planner, locals: locals
   end
