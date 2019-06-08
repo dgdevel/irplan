@@ -18,12 +18,14 @@ class ImageUpdaterJob
   def perform(data)
     puts "ImageUpdaterJob.perform", data.inspect
     series = data[:series]
+    car_classes = data[:car_classes]
     week = data[:week]
     plans = data[:plans]
     highlight = data[:highlight]
     buttons = false
     html = ERB.new(IO.read('views/planner_image.erb')).result(OpenStruct.new({
       :series => series,
+      :car_classes => car_classes,
       :week => week,
       :plans => plans,
       :highlight => highlight,
@@ -106,9 +108,10 @@ class App < Sinatra::Base
     }
   end
 
-  def update_image(series, week, plans, highlight)
+  def update_image(series, car_classes, week, plans, highlight)
     locals = {
       series: series,
+      car_classes: car_classes,
       week: week,
       plans: plans,
       highlight: highlight,
@@ -131,6 +134,7 @@ class App < Sinatra::Base
   get '/planner' do
     locals = {
       series: Series.find(params[:series].to_i),
+      car_classes: CarClasses.where(series_id:params[:series].to_i),
       week: Weeks.find(params[:week].to_i),
       plans: Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i),
       highlight: HighlightedWeekly.where(series_id: params[:series].to_i),
@@ -152,15 +156,18 @@ class App < Sinatra::Base
       weeks_id: params[:week].to_i,
       driver_name: params[:driver_name],
       probability: params[:probability].to_i,
-      race: params[:race].to_i
+      race: params[:race].to_i,
+      car_classes_id: params[:car_class].to_i
     )
     series = Series.find(params[:series].to_i)
+    carClasses = CarClasses.where(series_id:params[:series].to_i)
     week = Weeks.find(params[:week].to_i)
     plans = Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i)
     highlight = HighlightedWeekly.where(series_id: params[:series].to_i)
-    update_image(series, week, plans, highlight)
+    update_image(series, carClasses, week, plans, highlight)
     erb :planner_table, layout: false, locals: {
       series: series,
+      car_classes: carClasses,
       week: week,
       plans: plans,
       highlight: highlight,
@@ -171,12 +178,14 @@ class App < Sinatra::Base
   post '/remove_my_plan' do
     Plans.delete(params[:plan].to_i)
     series = Series.find(params[:series].to_i)
+    carClasses = CarClasses.where(series_id:params[:series].to_i)
     week = Weeks.find(params[:week].to_i)
     plans = Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i)
     highlight = HighlightedWeekly.where(series_id: params[:series].to_i)
-    update_image(series, week, plans, highlight)
+    update_image(series, carClasses, week, plans, highlight)
     erb :planner_table, layout: false, locals: {
       series: series,
+      car_classes: carClasses,
       week: week,
       plans: plans,
       highlight: highlight,

@@ -56,7 +56,7 @@
 											<button type="button"
 												onclick="removeMyPlan(<%= plan.id %>, '<%= plan.driver_name%>', '<%= iso_date%>')">
 												-
-											</button><% end %><%= plan.driver_name.sub(" ","&nbsp;") %>&nbsp;(<%= plan.probability %>%)
+                                                                                        </button><% end %><%= plan.htmlname(car_classes) %>&nbsp;(<%= plan.probability %>%)
 									</li>
 								<% end %>
 							</ul>

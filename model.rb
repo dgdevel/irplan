@@ -32,6 +32,18 @@ class Series < ActiveRecord::Base
 end
 
 ActiveRecord::Schema.define do
+  unless ActiveRecord::Base.connection.tables.include? 'car_classes'
+    create_table :car_classes do |table|
+      table.column :series_id, :integer
+      table.column :name, :string
+      table.column :shortname, :string
+    end
+  end
+end
+
+class CarClasses < ActiveRecord::Base; end
+
+ActiveRecord::Schema.define do
   unless ActiveRecord::Base.connection.tables.include? 'weeks'
     create_table :weeks do |table|
       table.column :series_id, :integer
@@ -60,9 +72,25 @@ ActiveRecord::Schema.define do
       table.column :race, :integer
     end
   end
+  unless ActiveRecord::Base.connection.column_exists? 'plans', 'car_classes_id'
+    change_table :plans do |table|
+      table.column :car_classes_id, :integer
+    end
+  end
 end
 
-class Plans < ActiveRecord::Base; end
+class Plans < ActiveRecord::Base
+
+  def htmlname(car_classes)
+    if self.car_classes_id > 0
+      car_classes.select { |cc| cc.id == self.car_classes_id }.first.shortname +
+        ':&nbsp;' + self.driver_name.sub(" ","&nbsp;")
+    else
+      self.driver_name.sub(" ","&nbsp;")
+    end
+  end
+
+end
 
 ActiveRecord::Schema.define do
   unless ActiveRecord::Base.connection.tables.include? 'events'
@@ -112,4 +140,6 @@ ActiveRecord::Schema.define do
 end
 
 class HighlightedWeekly < ActiveRecord::Base; end
+
+
 

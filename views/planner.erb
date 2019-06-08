@@ -45,7 +45,19 @@
 			<option value=90>90%</option>
 			<option value=100>100% - I will subscribe to this race, count on me</option>
 		</select>
-	</label>
+        </label>
+
+        <% if car_classes.any? %>
+          <label>
+            Car Class
+            <select id=car_class>
+              <option></option>
+              <% car_classes.each do |carClass| %>
+                <option value=<%= carClass.id %>><%= carClass.name %></option>
+              <% end %>
+            </select>
+          </label>
+        <% end %>
 
 	<br><br>
 
@@ -88,13 +100,23 @@ function addMyPlan(index) {
 		return;
 	} else {
 		$('#probability').parent().removeClass('invalid');
-	}
+        }
+        var hasCarClass = document.getElementById('car_class') != null;
+        var carClass = $('#car_class').val();
+        if (hasCarClass && !carClass) {
+          alert('You forgot to pick your car class for the race');
+          $('#car_class').parent().addClass('invalid');
+          return;
+        } else {
+          $('#car_class').parent().removeClass('invalid');
+        }
 	$.ajax({
 		type: 'POST',
 		url: 'add_my_plan',
 		data: {
 			series: <%= series.id %>,
-			week: <%= week.id %>,
+                        week: <%= week.id %>,
+                        car_class: carClass,
 			driver_name: driverName,
 			probability: probability,
 			race: index
