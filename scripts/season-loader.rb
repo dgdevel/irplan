@@ -9,7 +9,7 @@ require 'csv'
 require './model'
 
 input_file = ARGV[0]
-first_day  = Date.strptime(ARGV[1], '%Y-%M-%d')
+first_day  = Date.strptime(ARGV[1], '%Y-%m-%d')
 
 last_series= nil
 race_index = 1
