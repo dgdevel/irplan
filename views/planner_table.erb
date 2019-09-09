@@ -54,7 +54,7 @@
 									<!-- do not fix indentation: it's needed to keep non breaking spaces -->
 									<li><% if buttons and not is_past %>
 											<button type="button"
-												onclick="removeMyPlan(<%= plan.id %>, '<%= plan.driver_name%>', '<%= iso_date%>')">
+												onclick="removeMyPlan(<%= plan.id %>, '<%= plan.driver_name.gsub(/\'/,"\\\'") %>', '<%= iso_date%>')">
 												-
                                                                                         </button><% end %><%= plan.htmlname(car_classes) %>&nbsp;(<%= plan.probability %>%)
 									</li>
