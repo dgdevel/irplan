@@ -137,16 +137,14 @@ class App < Sinatra::Base
 
   get '/planner' do
     week = params[:week].to_i
-    puts "week = #{week}"
     if week == 0
       week = Weeks.where(series_id:params[:series].to_i,index:params[:week_index].to_i).first.id
     end
-    puts "week = #{week}"
     locals = {
       series: Series.find(params[:series].to_i),
       car_classes: CarClasses.where(series_id:params[:series].to_i),
       week: Weeks.find(week),
-      plans: Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i),
+      plans: Plans.where(series_id: params[:series].to_i, weeks_id: week),
       highlight: HighlightedWeekly.where(series_id: params[:series].to_i),
       buttons: true
     }
