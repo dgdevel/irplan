@@ -130,12 +130,22 @@ class App < Sinatra::Base
     ImageEventUpdaterJob.perform_async(locals)
   end
 
+  get '/image' do
+    week = Weeks.where(series_id:params[:series].to_i, index:params[:week_index].to_i).first
+    redirect "/s#{params[:series]}w#{week.id}.png", 302
+  end
 
   get '/planner' do
+    week = params[:week].to_i
+    puts "week = #{week}"
+    if week == 0
+      week = Weeks.where(series_id:params[:series].to_i,index:params[:week_index].to_i).first.id
+    end
+    puts "week = #{week}"
     locals = {
       series: Series.find(params[:series].to_i),
       car_classes: CarClasses.where(series_id:params[:series].to_i),
-      week: Weeks.find(params[:week].to_i),
+      week: Weeks.find(week),
       plans: Plans.where(series_id: params[:series].to_i, weeks_id: params[:week].to_i),
       highlight: HighlightedWeekly.where(series_id: params[:series].to_i),
       buttons: true
