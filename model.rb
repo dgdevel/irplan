@@ -1,4 +1,5 @@
 require 'active_record'
+require 'cgi'
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
 
@@ -82,12 +83,13 @@ end
 class Plans < ActiveRecord::Base
 
   def htmlname(car_classes)
-    if self.car_classes_id > 0
+    out = if self.car_classes_id > 0
       car_classes.select { |cc| cc.id == self.car_classes_id }.first.shortname +
-        ':&nbsp;' + self.driver_name.sub(" ","&nbsp;")
+        ':&nbsp;' + self.driver_name
     else
-      self.driver_name.sub(" ","&nbsp;")
+      self.driver_name
     end
+    CGI.escapeHTML(out).sub(" ", "&nbsp;")
   end
 
 end
