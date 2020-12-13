@@ -1,5 +1,6 @@
 
 source 'https://rubygems.org' do
+  gem 'rack', '>=2.0.0'
   gem 'sinatra', '>= 2.0.2'
   gem 'thin', '~>1.7.2'
   gem 'sqlite3', '~>1.3.13'
