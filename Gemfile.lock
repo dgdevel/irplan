@@ -1,4 +1,7 @@
 GEM
+  specs:
+
+GEM
   remote: https://rubygems.org/
   specs:
     activemodel (5.1.2)
@@ -77,4 +80,4 @@ DEPENDENCIES
   thin (~> 1.7.2)!
 
 BUNDLED WITH
-   2.1.4
+   2.2.14
