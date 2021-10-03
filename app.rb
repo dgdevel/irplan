@@ -137,25 +137,29 @@ class App < Sinatra::Base
 
   get '/planner' do
     week = params[:week].to_i
-    if week == 0
-      week = Weeks.where(series_id:params[:series].to_i,index:params[:week_index].to_i).first.id
+    begin
+      if week == 0
+        week = Weeks.where(series_id:params[:series].to_i,index:params[:week_index].to_i).first.id
+      end
+      locals = {
+        series: Series.find(params[:series].to_i),
+        car_classes: CarClasses.where(series_id:params[:series].to_i),
+        week: Weeks.find(week),
+        plans: Plans.where(series_id: params[:series].to_i, weeks_id: week),
+        highlight: HighlightedWeekly.where(series_id: params[:series].to_i),
+        buttons: true
+      }
+      # generate image if does not exists
+      imagefilename = "public/s#{locals[:series].id}w#{locals[:week].id}.png"
+      puts "test existence #{imagefilename}"
+      if not File.file?(imagefilename) then
+        puts "file need to be generated!"
+        update_image(locals[:series], locals[:car_classes], locals[:week], locals[:plans], locals[:highlight])
+      end
+      erb :planner, locals: locals
+    rescue ActiveRecord::RecordNotFound => e
+      return 410
     end
-    locals = {
-      series: Series.find(params[:series].to_i),
-      car_classes: CarClasses.where(series_id:params[:series].to_i),
-      week: Weeks.find(week),
-      plans: Plans.where(series_id: params[:series].to_i, weeks_id: week),
-      highlight: HighlightedWeekly.where(series_id: params[:series].to_i),
-      buttons: true
-    }
-    # generate image if does not exists
-    imagefilename = "public/s#{locals[:series].id}w#{locals[:week].id}.png"
-    puts "test existence #{imagefilename}"
-    if not File.file?(imagefilename) then
-      puts "file need to be generated!"
-      update_image(locals[:series], locals[:car_classes], locals[:week], locals[:plans], locals[:highlight])
-    end
-    erb :planner, locals: locals
   end
 
   post '/add_my_plan' do
