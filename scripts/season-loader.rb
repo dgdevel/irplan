@@ -15,6 +15,7 @@ last_series= nil
 race_index = 1
 race_date  = first_day
 
+Plans.delete_all
 Weeks.delete_all
 
 CSV.foreach(input_file, headers:true) do |row|
